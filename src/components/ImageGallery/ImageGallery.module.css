@@ -1,0 +1,9 @@
+.list {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.item {
+  width: calc((100% - 80px) / 4);
+}

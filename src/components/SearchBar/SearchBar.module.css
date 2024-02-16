@@ -1,0 +1,34 @@
+.header {
+  background-color: rgb(98, 98, 248);
+  padding: 10px 0;
+}
+.form {
+  position: relative;
+  margin: 0 auto;
+  width: 400px;
+}
+
+.input {
+  width: 300px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 5px 0 5px 50px;
+}
+
+.btn {
+  border: none;
+  background-color: transparent;
+
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:hover .icon,
+.btn:focus .icon {
+  color: gray;
+}
