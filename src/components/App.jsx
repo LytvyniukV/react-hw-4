@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getImages } from '../JS/request';
 import { SearchBar } from './SearchBar/SearchBar';
 import { Loader } from './Loader/Loader';
 import { ErrorMessage } from './ErrorMessage/ErrorMessage';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { LoadMoreBtn } from './LoadMoreBtn/LoadMoreBtn';
+import { ImageModal } from './ImageModal/ImageModal';
+
 function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -12,35 +14,65 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bigImage, setBigImage] = useState('');
+  //налаштовує стейти при новому пошуку
+  const onChangeSearch = query => {
+    setFilter('');
+    setPage(1);
+    setImages([]);
+    setFilter(query);
+    setTotalPages(1);
+    setError(false);
+  };
+  //робить запит при зміні слова пошуку
+  useEffect(() => {
+    if (!filter) return;
+    handleSearch();
+  }, [filter]);
+  //потребує додати функцію у масив залежностей, але тоді будуть нескінченні запити,
+  //по іншому не придумав, можливо підкажете як
 
-  const handleSearch = async query => {
+  //функція запиту
+  const handleSearch = async () => {
     try {
       setLoading(true);
       const { results, total_pages } = await getImages({
         page: page,
-        query: query,
+        query: filter,
         per_page: 30,
       });
-      if (total_pages <= page) setPage(1);
+
       setImages([...images, ...results]);
-      if (filter !== query) setImages([...results]);
       setPage(page + 1);
       setTotalPages(total_pages);
-      setFilter(query);
     } catch (error) {
       setError(true);
     } finally {
       setLoading(false);
     }
   };
-
+  console.log(page);
+  const handleOpenModal = imgUrl => {
+    setBigImage(imgUrl);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <>
-      <SearchBar onSearch={handleSearch} />
-      <ImageGallery images={images} />
+      <SearchBar onSearch={onChangeSearch} />
+      <ImageGallery images={images} handleOpenModal={handleOpenModal} />
       {loading && <Loader />}
       {error && <ErrorMessage />}
-      {totalPages > page && <LoadMoreBtn onLoad={() => handleSearch(filter)} />}
+      {totalPages > page && <LoadMoreBtn onLoad={handleSearch} />}
+
+      <ImageModal
+        handleCloseModal={handleCloseModal}
+        imgUrl={bigImage}
+        showModal={isModalOpen}
+      />
     </>
   );
 }

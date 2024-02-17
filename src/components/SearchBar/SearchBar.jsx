@@ -13,6 +13,7 @@ export const SearchBar = ({ onSearch }) => {
       return;
     }
     onSearch(query);
+    form.reset();
   };
 
   return (

@@ -1,6 +1,6 @@
 .list {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   flex-wrap: wrap;
   margin-left: auto;
   margin-right: auto;
@@ -9,6 +9,12 @@
 }
 
 .item {
+  cursor: pointer;
   width: 280px;
   height: 250px;
+}
+
+.item:hover,
+.item:focus {
+  scale: 1.05;
 }
