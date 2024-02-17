@@ -2,8 +2,13 @@
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
 }
 
 .item {
-  width: calc((100% - 80px) / 4);
+  width: 280px;
+  height: 250px;
 }

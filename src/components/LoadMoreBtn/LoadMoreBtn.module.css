@@ -1,0 +1,20 @@
+.btn {
+  width: 200px;
+  height: 40px;
+  color: white;
+  border: none;
+  background-color: rgb(98, 98, 248);
+  margin: 30px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  font-size: 18px;
+}
+
+.btn:hover,
+.btn:focus {
+  background-color: rgb(42, 42, 210);
+  scale: 1.05;
+  box-shadow: 3px 3px 3px rgb(98, 98, 248);
+}
