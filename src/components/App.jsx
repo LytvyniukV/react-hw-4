@@ -11,7 +11,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [images, setImages] = useState([]);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,32 +26,36 @@ function App() {
     setTotalPages(1);
     setError(false);
   };
+  //налаштовує сторінку для пагінації
+  const setCurrentPage = () => {
+    setPage(prevPage => prevPage + 1);
+  };
 
-  //виконує запит при зміні фільтру
+  //виконує запит при зміні фільтру або сторінки
   useEffect(() => {
     if (!filter) return;
+    //функція запиту
+    const handleSearch = async () => {
+      try {
+        setLoading(true);
+        const { results, total_pages } = await getImages({
+          page: page,
+          query: filter,
+          per_page: 30,
+        });
+
+        setImages(prevImages => {
+          return [...prevImages, ...results];
+        });
+        setTotalPages(total_pages);
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
     handleSearch();
-  }, [filter]);
-
-  //функція запиту
-  const handleSearch = async () => {
-    try {
-      setLoading(true);
-      const { results, total_pages } = await getImages({
-        page: page,
-        query: filter,
-        per_page: 30,
-      });
-
-      setImages([...images, ...results]);
-      setPage(page + 1);
-      setTotalPages(total_pages);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [filter, page]);
 
   const onImageClick = (imgUrl, imgDescription) => {
     setBigImage(imgUrl);
@@ -63,13 +67,22 @@ function App() {
     setBigImage('');
     setImageDescription('');
   };
+
   return (
     <>
       <SearchBar onSearch={onChangeSearch} />
       <ImageGallery images={images} onImageClick={onImageClick} />
       {loading && <Loader />}
-      {error && <ErrorMessage />}
-      {totalPages > page && <LoadMoreBtn onLoad={handleSearch} />}
+      {error && (
+        <ErrorMessage>
+          {'Whoops, something went wrong! Please try reloading this page!'}
+        </ErrorMessage>
+      )}
+      {page !== totalPages ? (
+        totalPages > 1 && <LoadMoreBtn onLoad={setCurrentPage} />
+      ) : (
+        <ErrorMessage>{'Sorry, no images left'}</ErrorMessage>
+      )}
 
       <ImageModal
         handleCloseModal={handleCloseModal}
