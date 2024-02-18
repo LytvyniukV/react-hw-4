@@ -16,22 +16,22 @@ function App() {
   const [filter, setFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [bigImage, setBigImage] = useState('');
+  const [imageDescription, setImageDescription] = useState('');
+
   //налаштовує стейти при новому пошуку
   const onChangeSearch = query => {
-    setFilter('');
     setPage(1);
     setImages([]);
     setFilter(query);
     setTotalPages(1);
     setError(false);
   };
-  //робить запит при зміні слова пошуку
+
+  //виконує запит при зміні фільтру
   useEffect(() => {
     if (!filter) return;
     handleSearch();
   }, [filter]);
-  //потребує додати функцію у масив залежностей, але тоді будуть нескінченні запити,
-  //по іншому не придумав, можливо підкажете як
 
   //функція запиту
   const handleSearch = async () => {
@@ -52,18 +52,21 @@ function App() {
       setLoading(false);
     }
   };
-  console.log(page);
-  const handleOpenModal = imgUrl => {
+
+  const onImageClick = (imgUrl, imgDescription) => {
     setBigImage(imgUrl);
+    setImageDescription(imgDescription);
     setIsModalOpen(true);
   };
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setBigImage('');
+    setImageDescription('');
   };
   return (
     <>
       <SearchBar onSearch={onChangeSearch} />
-      <ImageGallery images={images} handleOpenModal={handleOpenModal} />
+      <ImageGallery images={images} onImageClick={onImageClick} />
       {loading && <Loader />}
       {error && <ErrorMessage />}
       {totalPages > page && <LoadMoreBtn onLoad={handleSearch} />}
@@ -71,6 +74,7 @@ function App() {
       <ImageModal
         handleCloseModal={handleCloseModal}
         imgUrl={bigImage}
+        imgDescription={imageDescription}
         showModal={isModalOpen}
       />
     </>

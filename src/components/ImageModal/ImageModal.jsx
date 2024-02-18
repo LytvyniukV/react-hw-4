@@ -2,7 +2,12 @@ import ReactModal from 'react-modal';
 import css from './ImageModal.module.css';
 ReactModal.setAppElement('body');
 
-export const ImageModal = ({ showModal, handleCloseModal, imgUrl }) => {
+export const ImageModal = ({
+  showModal,
+  handleCloseModal,
+  imgUrl,
+  imgDescription,
+}) => {
   return (
     <>
       <ReactModal
@@ -12,7 +17,7 @@ export const ImageModal = ({ showModal, handleCloseModal, imgUrl }) => {
         className={css.Modal}
         overlayClassName={css.Overlay}
       >
-        <img src={imgUrl} alt="" />
+        <img src={imgUrl} alt={imgDescription} />
       </ReactModal>
     </>
   );

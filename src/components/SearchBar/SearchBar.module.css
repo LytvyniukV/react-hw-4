@@ -29,7 +29,7 @@
   justify-content: center;
 }
 
-.btn:hover .icon,
-.btn:focus .icon {
+.btn:hover,
+.btn:focus {
   color: gray;
 }

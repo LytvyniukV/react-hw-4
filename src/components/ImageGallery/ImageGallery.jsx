@@ -1,6 +1,6 @@
 import css from './ImageGallery.module.css';
 import { ImageCard } from '../ImageCard/ImageCard';
-export const ImageGallery = ({ images, handleOpenModal }) => {
+export const ImageGallery = ({ images, onImageClick }) => {
   return (
     <ul className={css.list}>
       {images.map(({ id, description, urls: { small, regular } }) => {
@@ -8,7 +8,7 @@ export const ImageGallery = ({ images, handleOpenModal }) => {
           <li
             key={id}
             className={css.item}
-            onClick={() => handleOpenModal(regular)}
+            onClick={() => onImageClick(regular, description)}
           >
             <ImageCard imgDescription={description} imgUrl={small} />
           </li>
