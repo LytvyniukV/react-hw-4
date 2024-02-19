@@ -6,12 +6,13 @@ import { ErrorMessage } from './ErrorMessage/ErrorMessage';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { LoadMoreBtn } from './LoadMoreBtn/LoadMoreBtn';
 import { ImageModal } from './ImageModal/ImageModal';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [images, setImages] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
   const [filter, setFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,11 +44,11 @@ function App() {
           query: filter,
           per_page: 30,
         });
-
         setImages(prevImages => {
           return [...prevImages, ...results];
         });
         setTotalPages(total_pages);
+        if (page === total_pages) toast('There are no images left');
       } catch (error) {
         setError(true);
       } finally {
@@ -73,22 +74,22 @@ function App() {
       <SearchBar onSearch={onChangeSearch} />
       <ImageGallery images={images} onImageClick={onImageClick} />
       {loading && <Loader />}
-      {error && (
-        <ErrorMessage>
-          {'Whoops, something went wrong! Please try reloading this page!'}
-        </ErrorMessage>
-      )}
-      {page !== totalPages ? (
-        totalPages > 1 && <LoadMoreBtn onLoad={setCurrentPage} />
-      ) : (
-        <ErrorMessage>{'Sorry, no images left'}</ErrorMessage>
-      )}
-
+      {error && <ErrorMessage />}
+      {page !== totalPages && <LoadMoreBtn onLoad={setCurrentPage} />}
       <ImageModal
         handleCloseModal={handleCloseModal}
         imgUrl={bigImage}
         imgDescription={imageDescription}
         showModal={isModalOpen}
+      />
+      <Toaster
+        toastOptions={{
+          style: {
+            backgroundColor: 'green',
+            color: 'white',
+          },
+          position: 'top-right',
+        }}
       />
     </>
   );

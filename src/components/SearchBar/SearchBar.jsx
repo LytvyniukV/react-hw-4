@@ -4,7 +4,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useState } from 'react';
 
 export const SearchBar = ({ onSearch }) => {
-  const [isButtonActive, setIsButtonActive] = useState(true);
+  const [isButtonActive, setIsButtonActive] = useState(false);
   const notify = () => toast('Please enter search term!');
   const handleSubmit = event => {
     event.preventDefault();
@@ -21,9 +21,9 @@ export const SearchBar = ({ onSearch }) => {
   const onChangeSearch = e => {
     const query = e.target.value;
     if (query.trim() !== '') {
-      setIsButtonActive(false);
-    } else {
       setIsButtonActive(true);
+    } else {
+      setIsButtonActive(false);
     }
   };
 
@@ -39,9 +39,11 @@ export const SearchBar = ({ onSearch }) => {
           name="query"
           onChange={onChangeSearch}
         />
-        <button type="submit" className={css.btn} disabled={isButtonActive}>
-          <IoSearch size={20} className={css.icon} />
-        </button>
+        {isButtonActive && (
+          <button type="submit" className={css.btn}>
+            <IoSearch size={20} className={css.icon} />
+          </button>
+        )}
       </form>
       <Toaster
         toastOptions={{
